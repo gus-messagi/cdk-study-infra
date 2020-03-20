@@ -4,4 +4,6 @@ import * as cdk from '@aws-cdk/core';
 import { CdkStudyInfraStack } from '../lib/cdk-study-infra-stack';
 
 const app = new cdk.App();
-new CdkStudyInfraStack(app, 'CdkStudyInfraStack');
+new CdkStudyInfraStack(app, 'cdkInfraStudy');
+
+app.synth();
