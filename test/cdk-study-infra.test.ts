@@ -1,6 +1,6 @@
 import { expect as expectCDK, matchTemplate, MatchStyle } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
-import CdkStudyInfra = require('../lib/cdk-study-infra-stack');
+import CdkStudyInfra = require('../lib/index');
 
 test('Empty Stack', () => {
     const app = new cdk.App();

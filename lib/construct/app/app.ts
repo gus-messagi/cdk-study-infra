@@ -1,5 +1,9 @@
 import { Construct, RemovalPolicy, SecretValue } from '@aws-cdk/core';
-import { Bucket } from '@aws-cdk/aws-s3';
+import {
+    Bucket,
+    HttpMethods,
+    CorsRule, 
+} from '@aws-cdk/aws-s3';
 import { 
     Role, 
     PolicyStatement, 
@@ -16,6 +20,7 @@ import {
 } from '@aws-cdk/aws-codebuild';
 import { Artifact, Pipeline } from '@aws-cdk/aws-codepipeline';
 import { GitHubSourceAction, CodeBuildAction } from '@aws-cdk/aws-codepipeline-actions';
+import context from '../../context/';
 
 interface IAppProps {
     ArtifactBucket: Bucket,
@@ -25,11 +30,19 @@ export default class CdkApp extends Construct {
     constructor(scope: Construct, id: string, props: IAppProps) {
         super(scope, id);
 
+        const { appUrl } = context(this);
+
         const oauthToken: SecretValue = SecretValue.secretsManager('arn:aws:secretsmanager:us-east-1:431351837843:secret:githubtoken-ilcAtG');
+
+        const corsRule: CorsRule = {
+            allowedOrigins: ['*'],
+            allowedMethods: [HttpMethods.GET],
+        };
 
         const bucket: Bucket = new Bucket(this, 'AppBucket', {
             bucketName: 'cdk-app-project-bucket',
             websiteIndexDocument: 'index.html',
+            cors: [corsRule],
             publicReadAccess: true,
             removalPolicy: RemovalPolicy.DESTROY,
         });
@@ -42,6 +55,7 @@ export default class CdkApp extends Construct {
             effect: Effect.ALLOW,
             actions: [
                 's3:*',
+                'cognito-idp:UpdateUserPoolClient',
             ],
             resources: ['*'],
         }));    

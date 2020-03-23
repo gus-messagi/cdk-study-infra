@@ -33,6 +33,8 @@ import { Bucket } from '@aws-cdk/aws-s3';
 import { CloudFormationCapabilities } from '@aws-cdk/aws-cloudformation';
 
 interface ApiProps {
+    CognitoUserPoolArn: string,
+    CognitoUserPoolId: string,
     ArtifactsBucket: Bucket,
 }
 
@@ -173,6 +175,10 @@ export default class Api extends Construct {
                             ],
                             replaceOnFailure: true,
                             deploymentRole: samDeploymentRole,
+                            parameterOverrides: {
+                                CognitoUserPoolArn: props.CognitoUserPoolArn,
+                                CognitoUserPoolId: props.CognitoUserPoolId
+                            }
                         })
                     ]
                 }
